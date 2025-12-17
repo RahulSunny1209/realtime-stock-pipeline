@@ -25,12 +25,24 @@ from config.kafka_config import kafka_config
 # Setup logger
 logger = setup_logger(__name__, 'logs/producer.log')
 
+def get_int_env(key: str, default: int) -> int:
+        """
+        Safely read an integer environment variable.
+        Falls back to default if missing or invalid.
+        """
+        value = os.getenv(key)
+        try:
+            return int(value) if value is not None else default
+        except ValueError:
+            logger.warning(f"⚠️ Invalid int for {key}: {value}. Using default {default}")
+            return default  
+
 # Get configuration from environment
 POLYGON_API_KEY = os.getenv("POLYGON_API_KEY")
-FETCH_INTERVAL = int(os.getenv("FETCH_INTERVAL", 60))
-RETRY_ATTEMPTS = int(os.getenv("RETRY_ATTEMPTS", 3))
-SYMBOL_DELAY = int(os.getenv("SYMBOL_DELAY", 3))
-METADATA_TTL_HOURS = int(os.getenv("METADATA_TTL_HOURS", 6))
+FETCH_INTERVAL = get_int_env("FETCH_INTERVAL", 60)
+RETRY_ATTEMPTS = get_int_env("RETRY_ATTEMPTS", 3)
+SYMBOL_DELAY = get_int_env("SYMBOL_DELAY", 3)
+METADATA_TTL_HOURS = get_int_env("METADATA_TTL_HOURS", 6)
 
 # Validate API key
 if not POLYGON_API_KEY:
@@ -313,7 +325,7 @@ class StockProducer:
         
         logger.info(f"{'='*60}\n")
     
-    def produce(self, interval: int = None):
+    def produce(self, interval: Optional[int] = None):
         """
         Start producing stock data
         
