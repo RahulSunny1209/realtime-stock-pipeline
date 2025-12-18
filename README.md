@@ -2,8 +2,6 @@
 
 A production-grade, real-time data engineering pipeline that ingests, processes, and visualizes live stock market data.
 
-![Pipeline Architecture](docs/architecture-diagram.png)
-
 ## 🎯 Project Overview
 
 This project demonstrates a complete real-time data pipeline using modern data engineering tools and best practices. It fetches live stock data from Polygon.io, streams it through Apache Kafka, processes it with Apache Spark, stores it in PostgreSQL, and visualizes it on a Streamlit dashboard.
@@ -208,7 +206,7 @@ realtime-stock-pipeline/
 **Rahul Kothagundla**
 - MacBook M2
 - Learning Data Engineering
-- [LinkedIn](your-linkedin) | [Medium](https://medium.com/@kothagundlarahul) | [GitHub](your-github)
+- [LinkedIn](https://www.linkedin.com/in/kothagundlarahul/) | [Medium](https://medium.com/@kothagundlarahul) | [GitHub](https://github.com/RahulSunny1209)
 
 ## 📄 License
 
@@ -224,4 +222,4 @@ MIT License
 
 **⭐ If you found this helpful, please star the repository!**
 
-Built with ❤️ on MacBook M2
+Built with ❤️ 
