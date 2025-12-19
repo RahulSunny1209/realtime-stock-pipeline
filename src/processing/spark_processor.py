@@ -92,10 +92,10 @@ class StockStreamProcessor:
                 .format("kafka") \
                 .option("kafka.bootstrap.servers", spark_config.KAFKA_BOOTSTRAP_SERVERS) \
                 .option("subscribe", spark_config.KAFKA_TOPIC) \
-                .option("startingOffsets", "earliest") \
-                .option("startingOffsets", "latest") \
+                .option("startingOffsets", "earliest")\
                 .option("failOnDataLoss", "false") \
                 .load()
+                # .option("startingOffsets", "latest") 
             
             logger.info("✅ Connected to Kafka stream")
             return kafka_df

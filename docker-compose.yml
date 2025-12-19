@@ -65,6 +65,59 @@ services:
     networks:
       - stock-pipeline-network
 
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: stockuser
+      POSTGRES_PASSWORD: stockpass
+      POSTGRES_DB: stockmarket
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stockuser -d stockmarket"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stock-pipeline-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - stock-pipeline-network
+
+  # pgAdmin (PostgreSQL Web UI - Optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@stock.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - stock-pipeline-network
+
 networks:
   stock-pipeline-network:
     driver: bridge
@@ -72,3 +125,6 @@ networks:
 volumes:
   kafka-data:
   zookeeper-data:
+  postgres-data:
+  redis-data:
+  pgadmin-data:
