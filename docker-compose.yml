@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # Zookeeper - Kafka's coordination service
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     hostname: zookeeper
@@ -19,7 +16,6 @@ services:
     networks:
       - stock-pipeline-network
 
-  # Kafka Broker
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     hostname: kafka
@@ -29,7 +25,6 @@ services:
         condition: service_healthy
     ports:
       - "9092:9092"
-      - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -40,8 +35,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      KAFKA_JMX_PORT: 9101
-      KAFKA_JMX_HOSTNAME: localhost
     healthcheck:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
       interval: 10s
@@ -50,7 +43,6 @@ services:
     networks:
       - stock-pipeline-network
 
-  # Kafka UI (for monitoring)
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
@@ -65,7 +57,6 @@ services:
     networks:
       - stock-pipeline-network
 
-  # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
     container_name: postgres
@@ -87,7 +78,6 @@ services:
     networks:
       - stock-pipeline-network
 
-  # Redis Cache
   redis:
     image: redis:7-alpine
     container_name: redis
@@ -104,7 +94,6 @@ services:
     networks:
       - stock-pipeline-network
 
-  # pgAdmin (PostgreSQL Web UI - Optional)
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
@@ -118,13 +107,80 @@ services:
     networks:
       - stock-pipeline-network
 
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile.producer
+    container_name: stock-producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      FINNHUB_API_KEY: ${FINNHUB_API_KEY}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: stock-prices
+      STOCK_SYMBOLS: AAPL,GOOGL,MSFT,AMZN,TSLA
+      FETCH_INTERVAL: 30
+      SYMBOL_DELAY: 3
+    restart: unless-stopped
+    networks:
+      - stock-pipeline-network
+
+  spark-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile.spark
+    container_name: spark-processor
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: stock-prices
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: stockmarket
+      POSTGRES_USER: stockuser
+      POSTGRES_PASSWORD: stockpass
+    volumes:
+      - spark-checkpoints:/app/checkpoints
+    restart: unless-stopped
+    networks:
+      - stock-pipeline-network
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: streamlit-dashboard
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8501:8501"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: stockmarket
+      POSTGRES_USER: stockuser
+      POSTGRES_PASSWORD: stockpass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+    restart: unless-stopped
+    networks:
+      - stock-pipeline-network
+
 networks:
   stock-pipeline-network:
     driver: bridge
 
 volumes:
-  kafka-data:
-  zookeeper-data:
   postgres-data:
   redis-data:
   pgadmin-data:
+  spark-checkpoints:

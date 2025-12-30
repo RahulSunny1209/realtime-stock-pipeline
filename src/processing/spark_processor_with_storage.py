@@ -7,7 +7,7 @@ import os
 import sys
 
 # Set JAVA_HOME
-os.environ['JAVA_HOME'] = '/opt/homebrew/opt/openjdk@17'
+# os.environ['JAVA_HOME'] = '/opt/homebrew/opt/openjdk@17'
 os.environ['PATH'] = f"/opt/homebrew/opt/openjdk@17/bin:{os.environ['PATH']}"
 
 sys.path.append('.')

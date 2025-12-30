@@ -1,0 +1,33 @@
+FROM python:3.11
+
+WORKDIR /app
+
+ENV PIP_DEFAULT_TIMEOUT=300
+
+# Install Java and dependencies
+RUN apt-get update && apt-get install -y \
+    default-jdk \
+    gcc \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Java environment - this MUST come before Python packages
+ENV JAVA_HOME=/usr/lib/jvm/default-java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# Verify Java is accessible
+RUN java -version && echo "Java installed at: $(which java)"
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir --default-timeout=300 --retries 5 -r requirements.txt
+
+COPY src/ ./src/
+COPY config/ ./config/
+
+RUN mkdir -p /app/checkpoints/postgres-sink
+
+ENV PYTHONPATH=/app
+
+# Export Java home one more time in CMD
+CMD ["sh", "-c", "export JAVA_HOME=/usr/lib/jvm/default-java && export PATH=$JAVA_HOME/bin:$PATH && python src/processing/spark_processor_with_storage.py"]
