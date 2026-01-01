@@ -15,7 +15,7 @@ st.markdown('<h1 style="text-align: center; color: #1f77b4;">📈 Real-Time Stoc
 st.info("""
 🎯 **Demo Version** - Simplified for Streamlit Cloud  
 📦 **Full Stack**: Kafka + Spark + PostgreSQL + Docker  
-💼 **Portfolio Project** | [GitHub Repository](https://github.com/YOUR_USERNAME/realtime-stock-pipeline)
+💼 **Portfolio Project** | [GitHub Repository](https://github.com/RahulSunny1209/realtime-stock-pipeline)
 """)
 
 def generate_mock_data():
