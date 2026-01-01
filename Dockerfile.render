@@ -1,0 +1,32 @@
+FROM python:3.11
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    default-jdk \
+    postgresql-client \
+    redis-tools \
+    gcc \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Java environment
+ENV JAVA_HOME=/usr/lib/jvm/default-java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY src/ ./src/
+COPY config/ ./config/
+
+ENV PYTHONPATH=/app
+
+# Expose dashboard port
+EXPOSE 8501
+
+# Start dashboard (simplified for demo)
+CMD ["streamlit", "run", "src/dashboard/app.py", "--server.address", "0.0.0.0"]

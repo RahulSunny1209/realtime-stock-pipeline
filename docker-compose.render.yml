@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  # All-in-one service (for Render free tier)
+  stock-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile.render
+    ports:
+      - "8501:8501"
+    environment:
+      FINNHUB_API_KEY: ${FINNHUB_API_KEY}
+    restart: unless-stopped
