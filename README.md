@@ -5,7 +5,6 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue)](https://github.com/RahulSunny1209/realtime-stock-pipeline)
 
 **🌐 Live Demo:** [https://stock-pipeline.streamlit.app/](https://stock-pipeline.streamlit.app/)  
-**📺 Video Demo:** [Coming Soon]  
 **📦 GitHub:** [View Full Code](https://github.com/RahulSunny1209/realtime-stock-pipeline)
 
 ---
@@ -306,15 +305,15 @@ I wrote a comprehensive 7-part blog series documenting this project:
 6. **Part 6:** Full Docker Containerization
 7. **Part 7:** Free Cloud Deployment
 
-[Read the full series →](#)
+[Read the full series →] : [Medium](https://medium.com/@kothagundlarahul)
 
 ---
 
 ## 👤 Author
 
 **Your Name**
-- 💼 LinkedIn: [linkedin.com/in/your-profile](https://linkedin.com/in/kothagundlarahul)
-- 🐙 GitHub: [@your-username](https://github.com/RahulSunny1209)
+- 💼 LinkedIn: [kothagundlarahul](https://linkedin.com/in/kothagundlarahul)
+- 🐙 GitHub: [@RahulSunny1209](https://github.com/RahulSunny1209)
 - 📧 Email: 2024tracker@gmail.com
 
 ---
