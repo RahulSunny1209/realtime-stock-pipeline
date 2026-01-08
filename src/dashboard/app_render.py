@@ -130,4 +130,4 @@ with col4:
     st.metric("🐳 Deployment", "Docker")
 
 st.caption("Built with Python, Streamlit, Plotly | Portfolio Project")
-st.caption("⭐ [View Full Code on GitHub](https://github.com/RahulSunny1209/realtime-stock-pipeline)")
+st.caption("⭐ [View Full Code on GitHub](https://github.com/RahulKothagundla/realtime-stock-pipeline)")
